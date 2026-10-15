@@ -154,13 +154,18 @@ collections:
               label: "Default Theme (readers can still toggle)",
               name: "defaultTheme",
               widget: "select",
-              options:
-                - { label: "Black + Burnt Orange", value: "bw-orange" }
-                - { label: "Slate", value: "slate" }
-                - { label: "Navy + Cream", value: "navy-cream" }
-                - { label: "Forest", value: "forest" }
-                - { label: "Stone", value: "stone" },
-              default: "bw-orange",
+                            options:
+                - label: "Black + Burnt Orange"
+                  value: "bw-orange"
+                - label: "Slate"
+                  value: "slate"
+                - label: "Navy + Cream"
+                  value: "navy-cream"
+                - label: "Forest"
+                  value: "forest"
+                - label: "Stone"
+                  value: "stone"
+              default: "bw-orange"
             }
           - {
               label: "Buttondown Username (for newsletter — leave blank to hide the box)",
