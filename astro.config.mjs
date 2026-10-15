@@ -4,7 +4,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://lavoz.vercel.app',
+  site: 'https://la-voz-seven.vercel.app',
   integrations: [
     tailwind(),
     mdx(),

@@ -11,7 +11,7 @@ export const siteConfig = {
   email: 'uchihazeno06@gmail.com',  // change anytime, no code hunt needed
 
   // ── URLs ──────────────────────────────────
-  url: 'https://lavoz.vercel.app',
+ url: 'https://la-voz-seven.vercel.app',
 
   // ── Social (leave blank to hide) ──────────
   social: {

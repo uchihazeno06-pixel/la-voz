@@ -1,20 +1,19 @@
 backend:
   name: github
-  repo: YOUR_GITHUB_USERNAME/la-voz   # ← change this after you create the repo
+  repo: uchihazeno06-pixel/la-voz
   branch: main
-  base_url: https://lavoz.vercel.app  # ← the OAuth relay (set up in Batch 5)
+  base_url: https://la-voz-seven.vercel.app
+  auth_endpoint: oauth
+  site_domain: la-voz-seven.vercel.app
 
-# Where uploaded images go
 media_folder: "public/uploads"
 public_folder: "/uploads"
 
-# Editorial workflow: drafts → review → publish. Yes, keep it on.
 publish_mode: editorial_workflow
 
-# Site display
-site_url: https://lavoz.vercel.app
-display_url: https://lavoz.vercel.app
-logo_url: https://lavoz.vercel.app/favicon.svg
+site_url: https://la-voz-seven.vercel.app
+display_url: https://la-voz-seven.vercel.app
+logo_url: https://la-voz-seven.vercel.app/favicon.svg
 
 # ─────────────────────────────────────────────
 # COLLECTIONS — everything you can edit
