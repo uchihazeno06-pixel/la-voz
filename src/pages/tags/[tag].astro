@@ -10,14 +10,19 @@ export async function getStaticPaths() {
     ...(await getCollection('earthDaily')).filter(isPublished),
   ];
   const tags = new Set<string>();
-  for (const p of all) for (const t of p.data.tags) tags.add(t);
+  for (const p of all) {
+    for (const t of p.data.tags) tags.add(t);
+  }
+
+  const posts = (await getCollection('posts')).filter(isPublished);
+  const entries = (await getCollection('earthDaily')).filter(isPublished);
 
   return [...tags].map((tag) => ({
     params: { tag: slugifyTag(tag) },
     props: {
       tag,
-      posts: sortByDateDesc((await getCollection('posts')).filter((p) => isPublished(p) && p.data.tags.includes(tag))),
-      entries: sortByDateDesc((await getCollection('earthDaily')).filter((p) => isPublished(p) && p.data.tags.includes(tag))),
+      posts: sortByDateDesc(posts.filter((p) => p.data.tags.includes(tag))),
+      entries: sortByDateDesc(entries.filter((p) => p.data.tags.includes(tag))),
     },
   }));
 }
