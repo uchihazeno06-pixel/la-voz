@@ -64,11 +64,12 @@ collections:
       - label: "Body"
         name: "body"
         widget: "markdown"
-        buttons:
+                buttons:
           - "bold"
           - "italic"
           - "link"
-          - "heading"
+          - "heading-one"
+          - "heading-two"
           - "quote"
           - "bulleted-list"
           - "numbered-list"
@@ -109,11 +110,12 @@ collections:
       - label: "Body"
         name: "body"
         widget: "markdown"
-        buttons:
+                buttons:
           - "bold"
           - "italic"
           - "link"
-          - "heading"
+          - "heading-one"
+          - "heading-two"
           - "quote"
           - "bulleted-list"
           - "numbered-list"
