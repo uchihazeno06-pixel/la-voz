@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { isPublished, slugifyTag, sortByDateDesc } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const all = [
+    ...(await getCollection('posts')).filter(isPublished),
+    ...(await getCollection('earthDaily')).filter(isPublished),
+  ];
+  const tags = new Set<string>();
+  for (const p of all) for (const t of p.data.tags) tags.add(t);
+
+  return [...tags].map((tag) => ({
+    params: { tag: slugifyTag(tag) },
+    props: {
+      tag,
+      posts: sortByDateDesc((await getCollection('posts')).filter((p) => isPublished(p) && p.data.tags.includes(tag))),
+      entries: sortByDateDesc((await getCollection('earthDaily')).filter((p) => isPublished(p) && p.data.tags.includes(tag))),
+    },
+  }));
+}
+
+interface Props {
+  tag: string;
+  posts: any[];
+  entries: any[];
+}
+const { tag, posts, entries } = Astro.props;
+const all = sortByDateDesc([...posts, ...entries]);
+---
+
+<BaseLayout title={`#${tag}`} description={`Posts tagged ${tag}.`}>
+  <section class="tag-intro">
+    <a href="/tags" class="crumb">← All tags</a>
+    <h1 class="tag-title">#{tag}</h1>
+    <p class="tag-count">{all.length} {all.length === 1 ? 'post' : 'posts'}</p>
+  </section>
+
+  {all.length === 0 ? (
+    <p class="empty">Nothing here yet.</p>
+  ) : (
+    <div class="grid">
+      {all.map((p) => <PostCard post={p} />)}
+    </div>
+  )}
+</BaseLayout>
+
+<style>
+  .tag-intro {
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 2rem;
+  }
+  .crumb {
+    display: inline-block;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    margin-bottom: 1rem;
+  }
+  .crumb:hover { color: var(--color-accent); text-decoration: none; }
+  .tag-title {
+    font-family: theme('fontFamily.serif');
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.5rem;
+  }
+  .tag-count { color: var(--color-muted); margin: 0; }
+  .empty { color: var(--color-muted); padding: 3rem 0; text-align: center; }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
+</style>

@@ -1,0 +1,103 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagPill from '../../components/TagPill.astro';
+import { isPublished, slugifyTag } from '../../lib/utils';
+
+const posts = (await getCollection('posts')).filter(isPublished);
+const ed = (await getCollection('earthDaily')).filter(isPublished);
+
+const counts = new Map<string, number>();
+for (const p of [...posts, ...ed]) {
+  for (const t of p.data.tags) {
+    counts.set(t, (counts.get(t) ?? 0) + 1);
+  }
+}
+const tags = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+---
+
+<BaseLayout title="Tags" description="Browse posts and dispatches by tag.">
+  <section class="tags-intro">
+    <p class="eyebrow">Browse</p>
+    <h1 class="tags-title">Tags</h1>
+    <p class="tags-sub">Every topic covered on La Voz.</p>
+  </section>
+
+  {tags.length === 0 ? (
+    <p class="empty">No tags yet.</p>
+  ) : (
+    <ul class="tag-cloud">
+      {tags.map(([tag, count]) => (
+        <li class="tag-item">
+          <a href={`/tags/${slugifyTag(tag)}`} class="tag-link">
+            <span class="tag-name">#{tag}</span>
+            <span class="tag-count">{count}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</BaseLayout>
+
+<style>
+  .tags-intro {
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 2rem;
+  }
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 0.75rem;
+  }
+  .tags-title {
+    font-family: theme('fontFamily.serif');
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.5rem;
+  }
+  .tags-sub { color: var(--color-muted); margin: 0; }
+  .empty { color: var(--color-muted); padding: 3rem 0; text-align: center; }
+
+  .tag-cloud {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .tag-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: all 0.15s;
+  }
+  .tag-link:hover {
+    border-color: var(--color-accent);
+    text-decoration: none;
+  }
+  .tag-name { font-weight: 600; }
+  .tag-count {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    background: var(--color-surface);
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+  }
+  @media (min-width: 640px) {
+    .tag-cloud { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 960px) {
+    .tag-cloud { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>

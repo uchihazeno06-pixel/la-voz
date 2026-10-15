@@ -1,0 +1,158 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TagPill from '../components/TagPill.astro';
+import { sortByDateDesc, isPublished, formatDate, readingTime } from '../lib/utils';
+
+const entries = sortByDateDesc(
+  (await getCollection('earthDaily')).filter(isPublished)
+);
+
+// Group by date (day)
+const grouped = entries.reduce<Record<string, typeof entries>>((acc, entry) => {
+  const key = new Date(entry.data.date).toISOString().slice(0, 10);
+  (acc[key] ||= []).push(entry);
+  return acc;
+}, {});
+const days = Object.keys(grouped).sort((a, b) => (a < b ? 1 : -1));
+---
+
+<BaseLayout
+  title="Earth Daily"
+  description="World events, wars, and global situations — posted as they happen."
+>
+  <section class="ed-intro">
+    <p class="eyebrow">Dispatch</p>
+    <h1 class="ed-title">Earth Daily</h1>
+    <p class="ed-sub">
+      World events, wars, and global situations — posted as they happen.
+      No fixed schedule. Sometimes several a day, sometimes none.
+    </p>
+  </section>
+
+  {entries.length === 0 && (
+    <p class="empty">No dispatches yet.</p>
+  )}
+
+  {days.map((day) => (
+    <section class="day-group">
+      <div class="day-label">
+        <time datetime={day}>{formatDate(new Date(day))}</time>
+      </div>
+      <div class="day-entries">
+        {grouped[day].map((entry) => {
+          const rt = readingTime(entry.body);
+          return (
+            <article class="wire-item">
+              <a href={`/earth-daily/${entry.slug}`} class="wire-link">
+                <h2 class="wire-title">{entry.title}</h2>
+                <p class="wire-hook">{entry.data.hook}</p>
+                <div class="wire-meta">
+                  <span>{new Date(entry.data.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span class="dot">·</span>
+                  <span>{rt} min read</span>
+                  {entry.data.tags.length > 0 && (
+                    <div class="wire-tags">
+                      {entry.data.tags.slice(0, 3).map((t) => <TagPill tag={t} />)}
+                    </div>
+                  )}
+                </div>
+              </a>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  ))}
+</BaseLayout>
+
+<style>
+  .ed-intro {
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 2rem;
+  }
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 0.75rem;
+  }
+  .ed-title {
+    font-family: theme('fontFamily.serif');
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.75rem;
+  }
+  .ed-sub {
+    font-size: 1rem;
+    color: var(--color-muted);
+    max-width: 60ch;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .empty {
+    padding: 3rem 0;
+    text-align: center;
+    color: var(--color-muted);
+  }
+
+  .day-group {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .day-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .day-entries { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .wire-item { border-left: 2px solid var(--color-border); padding-left: 1rem; transition: border-color 0.15s; }
+  .wire-item:hover { border-color: var(--color-accent); }
+  .wire-link { display: block; color: inherit; text-decoration: none; }
+  .wire-link:hover { text-decoration: none; }
+  .wire-title {
+    font-family: theme('fontFamily.serif');
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 0.35rem;
+    line-height: 1.3;
+    color: var(--color-text);
+    transition: color 0.15s;
+  }
+  .wire-item:hover .wire-title { color: var(--color-accent); }
+  .wire-hook {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--color-muted);
+    margin: 0 0 0.6rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .wire-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    flex-wrap: wrap;
+  }
+  .dot { color: var(--color-border); }
+  .wire-tags { display: flex; gap: 0.35rem; margin-left: 0.25rem; }
+
+  @media (min-width: 768px) {
+    .ed-title { font-size: 3rem; }
+    .day-group { grid-template-columns: 180px 1fr; gap: 2rem; }
+  }
+</style>

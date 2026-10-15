@@ -1,0 +1,104 @@
+---
+// ThemeToggle — lets readers pick theme + light/dark. Saves to localStorage.
+---
+
+<div class="theme-toggle" role="group" aria-label="Theme settings">
+  <button
+    id="mode-toggle"
+    class="toggle-btn"
+    aria-label="Toggle dark mode"
+    title="Toggle dark mode"
+  >
+    <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+    </svg>
+    <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  </button>
+
+  <select id="theme-select" class="theme-select" aria-label="Choose color theme">
+    <option value="bw-orange">Black · Orange</option>
+    <option value="slate">Slate</option>
+    <option value="navy-cream">Navy · Cream</option>
+    <option value="forest">Forest</option>
+    <option value="stone">Stone</option>
+  </select>
+</div>
+
+<style>
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .toggle-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+  .theme-select {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .theme-select:hover {
+    border-color: var(--color-accent);
+  }
+</style>
+
+<script>
+  // Runs on every page — reads localStorage, applies theme + mode
+  const DEFAULT_THEME = document.documentElement.dataset.defaultTheme || 'bw-orange';
+
+  function applyTheme(theme: string) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }
+  function applyMode(mode: 'light' | 'dark') {
+    document.documentElement.setAttribute('data-mode', mode);
+    localStorage.setItem('mode', mode);
+    const sun = document.getElementById('icon-sun');
+    const moon = document.getElementById('icon-moon');
+    if (sun && moon) {
+      sun.style.display = mode === 'dark' ? 'block' : 'none';
+      moon.style.display = mode === 'dark' ? 'none' : 'block';
+    }
+  }
+
+  // Init
+  const savedTheme = localStorage.getItem('theme') || DEFAULT_THEME;
+  const savedMode = (localStorage.getItem('mode') as 'light' | 'dark') || 'light';
+  applyTheme(savedTheme);
+  applyMode(savedMode);
+
+  // Wire controls
+  const select = document.getElementById('theme-select') as HTMLSelectElement | null;
+  if (select) {
+    select.value = savedTheme;
+    select.addEventListener('change', (e) => applyTheme((e.target as HTMLSelectElement).value));
+  }
+
+  document.getElementById('mode-toggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-mode') || 'light';
+    applyMode(current === 'dark' ? 'light' : 'dark');
+  });
+</script>

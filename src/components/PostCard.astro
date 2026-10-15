@@ -1,0 +1,142 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import TagPill from './TagPill.astro';
+import { siteConfig } from '../../site.config';
+
+interface Props {
+  post: CollectionEntry<'posts'> | CollectionEntry<'earthDaily'>;
+  featured?: boolean;
+}
+const { post, featured = false } = Astro.props;
+const { title, hook, date, tags } = post.data;
+
+const url = post.collection === 'posts'
+  ? `/posts/${post.slug}`
+  : `/earth-daily/${post.slug}`;
+
+// Read time: rough estimate from body if available, else from hook
+const body = (post as any).body ?? '';
+const wordCount = body.split(/\s+/).length;
+const readTime = Math.max(1, Math.round(wordCount / 200));
+
+const dateStr = new Date(date).toLocaleDateString('en-US', {
+  year: 'numeric', month: 'short', day: 'numeric',
+});
+---
+
+<article class:list={['post-card', { featured }]}>
+  <a href={url} class="card-link" aria-label={title}>
+    <header class="card-head">
+      <div class="card-meta">
+        <time datetime={new Date(date).toISOString()}>{dateStr}</time>
+        <span class="dot">·</span>
+        <span>{readTime} min read</span>
+      </div>
+      <h2 class="card-title">{title}</h2>
+    </header>
+
+    <p class="card-hook">{hook}</p>
+
+    <footer class="card-foot">
+      <span class="read-more">Read more <span aria-hidden="true">→</span></span>
+      {tags && tags.length > 0 && (
+        <div class="card-tags">
+          {tags.slice(0, 3).map((t) => <TagPill tag={t} />)}
+        </div>
+      )}
+    </footer>
+  </a>
+</article>
+
+<style>
+  .post-card {
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .post-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+  .card-link {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  color: inherit;
+  text-decoration: none;
+  height: 100%;
+}
+  .card-link:hover { text-decoration: none; }
+
+  .card-meta {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .dot { color: var(--color-border); }
+
+  .card-title {
+    font-family: theme('fontFamily.serif');
+    font-weight: 700;
+    font-size: 1.35rem;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    margin: 0 0 0.75rem;
+    color: var(--color-text);
+    transition: color 0.15s;
+  }
+  .post-card:hover .card-title { color: var(--color-accent); }
+
+  .card-hook {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--color-muted);
+    margin: 0 0 1.25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+.read-more {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+.card-tags {
+  display: inline-flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  align-items: center;
+  max-width: 60%;
+}
+
+  /* Featured variant (hero) */
+  .post-card.featured { grid-column: 1 / -1; }
+  .post-card.featured .card-link { padding: 2.5rem; }
+  .post-card.featured .card-title { font-size: 2rem; }
+  .post-card.featured .card-hook {
+    font-size: 1.05rem;
+    -webkit-line-clamp: 3;
+    max-width: 65ch;
+  }
+
+  @media (min-width: 768px) {
+    .post-card.featured .card-title { font-size: 2.5rem; }
+  }
+</style>

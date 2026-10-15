@@ -1,0 +1,130 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagPill from '../../components/TagPill.astro';
+import Newsletter from '../../components/Newsletter.astro';
+import PostCard from '../../components/PostCard.astro';
+import { readingTime, formatDate, sortByDateDesc, isPublished } from '../../lib/utils';
+import { siteConfig } from '../../../site.config';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+interface Props { post: CollectionEntry<'posts'> }
+const { post } = Astro.props;
+const { title, hook, date, tags, cover, coverAlt } = post.data;
+const rt = readingTime(post.body);
+
+// Related: same tag, exclude self, max 2
+const all = await getCollection('posts');
+const related = sortByDateDesc(
+  all.filter((p) => isPublished(p) && p.slug !== post.slug && p.data.tags.some((t) => tags.includes(t)))
+).slice(0, 2);
+---
+
+<BaseLayout title={title} description={hook} image={cover}>
+  <article class="post">
+    <header class="post-header">
+      <div class="post-meta">
+        <time datetime={new Date(date).toISOString()}>{formatDate(date)}</time>
+        <span class="dot">·</span>
+        <span>{rt} min read</span>
+        <span class="dot">·</span>
+        <span>{siteConfig.authorByline}</span>
+      </div>
+      <h1 class="post-title">{title}</h1>
+      <p class="post-hook">{hook}</p>
+      {tags.length > 0 && (
+        <div class="post-tags">
+          {tags.map((t) => <TagPill tag={t} size="md" />)}
+        </div>
+      )}
+    </header>
+
+    {cover && (
+      <figure class="post-cover">
+        <img src={cover} alt={coverAlt || title} loading="lazy" />
+      </figure>
+    )}
+
+    <div class="prose">
+      <slot />
+    </div>
+
+    <footer class="post-footer">
+      <a href="/" class="back">← Back to Trending</a>
+    </footer>
+  </article>
+
+  <Newsletter />
+
+  {related.length > 0 && (
+    <section class="related">
+      <h2 class="related-title">Related</h2>
+      <div class="related-grid">
+        {related.map((p) => <PostCard post={p} />)}
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .post { max-width: 68ch; margin: 0 auto; }
+  .post-header { margin-bottom: 2rem; }
+  .post-meta {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-muted);
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .dot { color: var(--color-border); }
+  .post-title {
+    font-family: theme('fontFamily.serif');
+    font-size: 2.25rem;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    margin: 0 0 1rem;
+  }
+  .post-hook {
+    font-size: 1.1rem;
+    line-height: 1.55;
+    color: var(--color-muted);
+    margin: 0 0 1.25rem;
+  }
+  .post-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  .post-cover { margin: 2rem 0; }
+  .post-cover img { width: 100%; border-radius: 6px; }
+
+  .post-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .back { font-size: 0.9rem; color: var(--color-muted); }
+  .back:hover { color: var(--color-accent); text-decoration: none; }
+
+  .related { max-width: 68ch; margin: 4rem auto 0; }
+  .related-title {
+    font-family: theme('fontFamily.serif');
+    font-size: 1.25rem;
+    margin: 0 0 1.25rem;
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .related-grid { grid-template-columns: 1fr 1fr; }
+    .post-title { font-size: 2.75rem; }
+  }
+</style>

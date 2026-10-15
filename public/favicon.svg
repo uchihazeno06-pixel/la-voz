@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- La Voz — geometric eagle mark -->
+  <rect width="64" height="64" rx="12" fill="#ffffff"/>
+  <g fill="#0a0a0a">
+    <!-- Left wing: 4 faceted feather planes -->
+    <path d="M30 28 L6 12 L10 22 L2 21 L12 30 L6 36 L26 34 Z"/>
+    <!-- Right wing: mirrored -->
+    <path d="M34 28 L58 12 L54 22 L62 21 L52 30 L58 36 L38 34 Z"/>
+    <!-- Body -->
+    <path d="M32 20 L26 34 L32 48 L38 34 Z"/>
+    <!-- Head -->
+    <path d="M32 10 L26 20 L32 25 L38 20 Z"/>
+    <!-- Beak -->
+    <path d="M38 18 L46 20 L38 22 Z"/>
+    <!-- Tail feathers -->
+    <path d="M27 48 L25 58 L29 55 L32 61 L35 55 L39 58 L37 48 Z"/>
+  </g>
+</svg>

@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Eagle from '../components/Eagle.astro';
+import { siteConfig } from '../../site.config';
+---
+
+<BaseLayout title="About" description={`About ${siteConfig.name}.`}>
+  <article class="about">
+    <div class="about-mark"><Eagle size={56} /></div>
+    <h1 class="about-title">About {siteConfig.name}</h1>
+
+    <div class="prose">
+      <p>
+        {siteConfig.name} means <em>"The Voice"</em> in Spanish.
+        It's a place for world events, personal thoughts, and questions
+        worth sitting with — written under the pen name <strong>Zeno</strong>.
+      </p>
+
+      <p>
+        The mission here is simple: to inform, to question, and to
+        make a voice heard. Earth Daily covers what's happening in
+        the world. The rest of the site is a mix — essays, observations,
+        things I'm working through.
+      </p>
+
+      <p>
+        No algorithmic feed. No engagement bait. No face reveal.
+        Just writing, sent out when it's ready.
+      </p>
+
+      <h2>What you'll find</h2>
+      <ul>
+        <li><strong>Trending</strong> — the latest posts, newest first</li>
+        <li><strong>Earth Daily</strong> — dispatches on world events, wars, and global situations</li>
+        <li><strong>Tags</strong> — browse by topic</li>
+      </ul>
+
+      <h2>Contact</h2>
+      <p>
+        Reach me at <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>,
+        or use the <a href="/contact">contact page</a>.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .about { max-width: 68ch; margin: 0 auto; }
+  .about-mark { color: var(--color-text); margin-bottom: 1.5rem; }
+  .about-title {
+    font-family: theme('fontFamily.serif');
+    font-size: 2.5rem;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    margin: 0 0 2rem;
+  }
+</style>

@@ -1,0 +1,96 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import Newsletter from '../components/Newsletter.astro';
+import { sortByDateDesc, isPublished } from '../lib/utils';
+import { siteConfig } from '../../site.config';
+
+const allPosts = (await getCollection('posts'))
+  .filter(isPublished);
+
+const sorted = sortByDateDesc(allPosts);
+
+// Featured: explicit `featured: true` wins, else newest
+const featured = sorted.find((p) => p.data.featured) ?? sorted[0];
+const rest = sorted.filter((p) => p.slug !== featured?.slug);
+---
+
+<BaseLayout>
+  <section class="intro">
+    <p class="eyebrow">Trending now</p>
+    <h1 class="intro-title">{siteConfig.name}</h1>
+    <p class="intro-sub">{siteConfig.tagline}</p>
+  </section>
+
+  {sorted.length === 0 && (
+    <p class="empty">No posts yet. Write your first one in the CMS at <code>/admin</code>.</p>
+  )}
+
+  {featured && (
+    <section class="featured-wrap">
+      <PostCard post={featured} featured={true} />
+    </section>
+  )}
+
+  {rest.length > 0 && (
+    <section class="grid">
+      {rest.map((post) => <PostCard post={post} />)}
+    </section>
+  )}
+
+  <Newsletter />
+</BaseLayout>
+
+<style>
+  .intro {
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 2rem;
+  }
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 0.75rem;
+  }
+  .intro-title {
+    font-family: theme('fontFamily.serif');
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.5rem;
+    line-height: 1.1;
+  }
+  .intro-sub {
+    font-size: 1rem;
+    color: var(--color-muted);
+    margin: 0;
+  }
+  .featured-wrap {
+    margin-bottom: 2rem;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .empty {
+    padding: 3rem 0;
+    text-align: center;
+    color: var(--color-muted);
+  }
+  .empty code {
+    background: var(--color-surface);
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+
+  @media (min-width: 768px) {
+    .intro-title { font-size: 3rem; }
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>

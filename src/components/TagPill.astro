@@ -1,0 +1,39 @@
+---
+interface Props {
+  tag: string;
+  size?: 'sm' | 'md';
+}
+const { tag, size = 'sm' } = Astro.props;
+---
+
+<a
+  href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+  class:list={['tag-pill', size]}
+>
+  {tag}
+</a>
+
+<style>
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 0.5rem;
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-muted);
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .tag-pill.sm { font-size: 0.68rem; }
+  .tag-pill.md { font-size: 0.78rem; height: 26px; }
+  .tag-pill:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+</style>

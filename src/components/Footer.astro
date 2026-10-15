@@ -1,0 +1,89 @@
+---
+import { siteConfig } from '../../site.config';
+import Eagle from './Eagle.astro';
+
+const year = new Date().getFullYear();
+const hasSocial = Object.values(siteConfig.social).some((v) => v);
+---
+
+<footer class="site-footer">
+  <div class="footer-wrap">
+    <div class="footer-brand">
+      <Eagle size={24} />
+      <div>
+        <p class="footer-name">{siteConfig.name}</p>
+        <p class="footer-tagline">{siteConfig.tagline}</p>
+      </div>
+    </div>
+
+    <nav class="footer-nav" aria-label="Footer">
+      {siteConfig.nav.map((item) => (
+        <a href={item.href} class="footer-link">{item.label}</a>
+      ))}
+      <a href="/rss.xml" class="footer-link">RSS</a>
+    </nav>
+
+    {hasSocial && (
+      <div class="footer-social">
+        {siteConfig.social.x && <a href={siteConfig.social.x} class="footer-link">X</a>}
+        {siteConfig.social.instagram && <a href={siteConfig.social.instagram} class="footer-link">Instagram</a>}
+        {siteConfig.social.github && <a href={siteConfig.social.github} class="footer-link">GitHub</a>}
+      </div>
+    )}
+
+   <p class="footer-meta">
+  © {year} {siteConfig.author}
+</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--color-border);
+    margin-top: 5rem;
+    background: var(--color-surface);
+  }
+  .footer-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-text);
+  }
+  .footer-name {
+    font-family: theme('fontFamily.serif');
+    font-weight: 700;
+    font-size: 1rem;
+    margin: 0;
+  }
+  .footer-tagline {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    margin: 0;
+  }
+  .footer-nav, .footer-social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+  .footer-link {
+    color: var(--color-muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+  .footer-link:hover { color: var(--color-accent); text-decoration: none; }
+  .footer-meta {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    margin: 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+</style>

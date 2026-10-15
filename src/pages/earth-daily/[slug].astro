@@ -1,0 +1,84 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagPill from '../../components/TagPill.astro';
+import { readingTime, formatDate } from '../../lib/utils';
+import { siteConfig } from '../../../site.config';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('earthDaily');
+  return entries.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+}
+
+interface Props { entry: CollectionEntry<'earthDaily'> }
+const { entry } = Astro.props;
+const { title, hook, date, tags } = entry.data;
+const rt = readingTime(entry.body);
+---
+
+<BaseLayout title={title} description={hook}>
+  <article class="dispatch">
+    <a href="/earth-daily" class="crumb">← Earth Daily</a>
+    <header class="dispatch-header">
+      <div class="dispatch-meta">
+        <time datetime={new Date(date).toISOString()}>
+          {formatDate(date)} · {new Date(date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+        </time>
+        <span class="dot">·</span>
+        <span>{rt} min read</span>
+        <span class="dot">·</span>
+        <span>{siteConfig.authorByline}</span>
+      </div>
+      <h1 class="dispatch-title">{title}</h1>
+      <p class="dispatch-hook">{hook}</p>
+      {tags.length > 0 && (
+        <div class="dispatch-tags">
+          {tags.map((t) => <TagPill tag={t} size="md" />)}
+        </div>
+      )}
+    </header>
+
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .dispatch { max-width: 68ch; margin: 0 auto; }
+  .crumb {
+    display: inline-block;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    margin-bottom: 1.5rem;
+  }
+  .crumb:hover { color: var(--color-accent); text-decoration: none; }
+  .dispatch-header { margin-bottom: 2rem; }
+  .dispatch-meta {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-muted);
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .dot { color: var(--color-border); }
+  .dispatch-title {
+    font-family: theme('fontFamily.serif');
+    font-size: 2rem;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    font-weight: 700;
+    margin: 0 0 1rem;
+  }
+  .dispatch-hook {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--color-muted);
+    margin: 0 0 1.25rem;
+  }
+  .dispatch-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  @media (min-width: 640px) { .dispatch-title { font-size: 2.5rem; } }
+</style>
