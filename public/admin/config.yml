@@ -15,11 +15,7 @@ site_url: https://la-voz-seven.vercel.app
 display_url: https://la-voz-seven.vercel.app
 logo_url: https://la-voz-seven.vercel.app/favicon.svg
 
-# ─────────────────────────────────────────────
-# COLLECTIONS — everything you can edit
-# ─────────────────────────────────────────────
 collections:
-  # ═══════════ BLOG POSTS ═══════════
   - name: posts
     label: "Blog Posts"
     label_singular: "Post"
@@ -31,62 +27,53 @@ collections:
     preview_path: "posts/{{slug}}"
     sortable_fields: ["date", "title"]
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - {
-          label: "Hook (2–3 sentence teaser shown on cards)",
-          name: "hook",
-          widget: "text",
-          pattern: [".{20,300}", "Between 20 and 300 characters"],
-        }
-      - {
-          label: "Publish Date",
-          name: "date",
-          widget: "datetime",
-          date_format: "YYYY-MM-DD",
-          time_format: false,
-          format: "YYYY-MM-DD",
-        }
-      - {
-          label: "Tags",
-          name: "tags",
-          widget: "list",
-          required: false,
-          default: [],
-          hint: "Pick from existing tags or type a new one. Used to group posts.",
-        }
-      - {
-          label: "Cover Image",
-          name: "cover",
-          widget: "image",
-          required: false,
-          choose_url: true,
-        }
-      - {
-          label: "Cover Image Alt Text",
-          name: "coverAlt",
-          widget: "string",
-          required: false,
-        }
-      - {
-          label: "Featured (shows as the big hero on home)",
-          name: "featured",
-          widget: "boolean",
-          default: false,
-        }
-      - {
-          label: "Draft (hide from the site)",
-          name: "draft",
-          widget: "boolean",
-          default: false,
-        }
-      - {
-          label: "Body",
-          name: "body",
-          widget: "markdown",
-          buttons: ["bold", "italic", "link", "heading", "quote", "bulleted-list", "numbered-list", "code"],
-        }
+      - label: "Title"
+        name: "title"
+        widget: "string"
+      - label: "Hook (2-3 sentence teaser shown on cards)"
+        name: "hook"
+        widget: "text"
+      - label: "Publish Date"
+        name: "date"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        format: "YYYY-MM-DD"
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        required: false
+        default: []
+      - label: "Cover Image"
+        name: "cover"
+        widget: "image"
+        required: false
+        choose_url: true
+      - label: "Cover Image Alt Text"
+        name: "coverAlt"
+        widget: "string"
+        required: false
+      - label: "Featured (shows as the big hero on home)"
+        name: "featured"
+        widget: "boolean"
+        default: false
+      - label: "Draft (hide from the site)"
+        name: "draft"
+        widget: "boolean"
+        default: false
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        buttons:
+          - "bold"
+          - "italic"
+          - "link"
+          - "heading"
+          - "quote"
+          - "bulleted-list"
+          - "numbered-list"
+          - "code"
 
-  # ═══════════ EARTH DAILY ═══════════
   - name: earthDaily
     label: "Earth Daily"
     label_singular: "Dispatch"
@@ -98,43 +85,40 @@ collections:
     preview_path: "earth-daily/{{slug}}"
     sortable_fields: ["date", "title"]
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - {
-          label: "Hook (1–3 sentence summary)",
-          name: "hook",
-          widget: "text",
-          pattern: [".{20,300}", "Between 20 and 300 characters"],
-        }
-      - {
-          label: "Date & Time",
-          name: "date",
-          widget: "datetime",
-          date_format: "YYYY-MM-DD",
-          time_format: true,
-          format: "YYYY-MM-DDTHH:mm:ssZ",
-        }
-      - {
-          label: "Tags",
-          name: "tags",
-          widget: "list",
-          required: false,
-          default: [],
-          hint: "e.g. War, Diplomacy, Economy, Climate",
-        }
-      - {
-          label: "Draft (hide from the site)",
-          name: "draft",
-          widget: "boolean",
-          default: false,
-        }
-      - {
-          label: "Body",
-          name: "body",
-          widget: "markdown",
-          buttons: ["bold", "italic", "link", "heading", "quote", "bulleted-list", "numbered-list", "code"],
-        }
+      - label: "Title"
+        name: "title"
+        widget: "string"
+      - label: "Hook (1-3 sentence summary)"
+        name: "hook"
+        widget: "text"
+      - label: "Date & Time"
+        name: "date"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: true
+        format: "YYYY-MM-DDTHH:mm:ssZ"
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        required: false
+        default: []
+      - label: "Draft (hide from the site)"
+        name: "draft"
+        widget: "boolean"
+        default: false
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        buttons:
+          - "bold"
+          - "italic"
+          - "link"
+          - "heading"
+          - "quote"
+          - "bulleted-list"
+          - "numbered-list"
+          - "code"
 
-  # ═══════════ SITE SETTINGS ═══════════
   - name: settings
     label: "Site Settings"
     files:
@@ -142,45 +126,61 @@ collections:
         label: "General"
         file: "site.config.ts"
         fields:
-          - { label: "Site Name", name: "name", widget: "string" }
-          - { label: "Tagline", name: "tagline", widget: "string" }
-          - { label: "Description (for search engines)", name: "description", widget: "text" }
-          - { label: "Author", name: "author", widget: "string" }
-          - { label: "Author Byline (shown on posts)", name: "authorByline", widget: "string" }
-          - { label: "Pen Name Note (shown in footer)", name: "penNameNote", widget: "string" }
-          - { label: "Contact Email", name: "email", widget: "string" }
-          - { label: "Site URL", name: "url", widget: "string" }
-          - {
-              label: "Default Theme (readers can still toggle)",
-              name: "defaultTheme",
-              widget: "select",
-                            options:
-                - label: "Black + Burnt Orange"
-                  value: "bw-orange"
-                - label: "Slate"
-                  value: "slate"
-                - label: "Navy + Cream"
-                  value: "navy-cream"
-                - label: "Forest"
-                  value: "forest"
-                - label: "Stone"
-                  value: "stone"
-              default: "bw-orange"
-            }
-          - {
-              label: "Buttondown Username (for newsletter — leave blank to hide the box)",
-              name: "buttondownUsername",
-              widget: "string",
-              required: false,
-              default: "",
-            }
-          - {
-              label: "Social Links",
-              name: "social",
-              widget: "object",
-              required: false,
-              fields:
-                - { label: "X (Twitter)", name: "x", widget: "string", required: false }
-                - { label: "Instagram", name: "instagram", widget: "string", required: false }
-                - { label: "GitHub", name: "github", widget: "string", required: false }
-            }
+          - label: "Site Name"
+            name: "name"
+            widget: "string"
+          - label: "Tagline"
+            name: "tagline"
+            widget: "string"
+          - label: "Description (for search engines)"
+            name: "description"
+            widget: "text"
+          - label: "Author"
+            name: "author"
+            widget: "string"
+          - label: "Author Byline (shown on posts)"
+            name: "authorByline"
+            widget: "string"
+          - label: "Contact Email"
+            name: "email"
+            widget: "string"
+          - label: "Site URL"
+            name: "url"
+            widget: "string"
+          - label: "Default Theme (readers can still toggle)"
+            name: "defaultTheme"
+            widget: "select"
+            options:
+              - label: "Black + Burnt Orange"
+                value: "bw-orange"
+              - label: "Slate"
+                value: "slate"
+              - label: "Navy + Cream"
+                value: "navy-cream"
+              - label: "Forest"
+                value: "forest"
+              - label: "Stone"
+                value: "stone"
+            default: "bw-orange"
+          - label: "Buttondown Username (leave blank to hide the newsletter box)"
+            name: "buttondownUsername"
+            widget: "string"
+            required: false
+            default: ""
+          - label: "Social Links"
+            name: "social"
+            widget: "object"
+            required: false
+            fields:
+              - label: "X (Twitter)"
+                name: "x"
+                widget: "string"
+                required: false
+              - label: "Instagram"
+                name: "instagram"
+                widget: "string"
+                required: false
+              - label: "GitHub"
+                name: "github"
+                widget: "string"
+                required: false
