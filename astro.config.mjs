@@ -8,9 +8,7 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
   site: 'https://la-voz-seven.vercel.app',
   output: 'server',
-  adapter: vercel({
-    runtime: 'nodejs22.x',
-  }),
+  adapter: vercel({ runtime: 'nodejs22.x' }),
   integrations: [
     tailwind(),
     mdx(),
