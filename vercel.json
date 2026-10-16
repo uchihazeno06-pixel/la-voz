@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "src/pages/**/*.ts": {
-      "runtime": "nodejs24.x"
-    }
-  }
-}
