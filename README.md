@@ -1,4 +1,3 @@
-> ⚠️ **Project Status: Suspended**
-> 
-> Development on this project has been suspended indefinitely. 
-> The current code is provided as-is, and no further updates, features, or bug fixes are planned at this time.
+![Status](https://img.shields.io/badge/Status-Suspended%20Indefinitely-red?style=flat-square)
+
+**Development Suspended:** This project is no longer actively maintained. Further development has been suspended indefinitely.
